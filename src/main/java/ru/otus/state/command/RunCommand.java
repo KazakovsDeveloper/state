@@ -1,19 +1,21 @@
 package ru.otus.state.command;
 
+import ru.otus.state.StartApp;
+
 /**
  * Написать команду, которая стартует код, написанный в пункте 1 в отдельном потоке.
  */
-public class StartCommand implements Command {
+public class RunCommand implements Command {
 
-    private final MacroCommand macroCommand;
+    private final StartApp startApp;
 
-    public StartCommand(MacroCommand macroCommand) {
-        this.macroCommand = macroCommand;
+    public RunCommand(StartApp startApp) {
+        this.startApp = startApp;
     }
 
     @Override
     public boolean execute() {
-        Thread thread = new Thread(macroCommand::execute);
+        Thread thread = new Thread(startApp::execute);
         thread.start();
         return true;
     }

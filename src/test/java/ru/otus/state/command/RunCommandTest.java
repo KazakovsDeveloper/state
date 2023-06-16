@@ -5,8 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
-import ru.otus.state.command.MacroCommand;
-import ru.otus.state.command.StartCommand;
+import ru.otus.state.StartApp;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -16,18 +15,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class StartCommandTest {
+public class RunCommandTest {
 
     private long id1;
     private long id2;
-    private MacroCommand macroCommand;
-    private StartCommand startCommand;
+    private StartApp startApp;
+    private RunCommand runCommand;
     private CountDownLatch latch;
 
     @BeforeAll
     public void init() {
-        macroCommand = mock(MacroCommand.class);
-        startCommand = new StartCommand(macroCommand);
+        startApp = mock(StartApp.class);
+        runCommand = new RunCommand(startApp);
         latch = new CountDownLatch(1);
     }
 
@@ -40,15 +39,15 @@ public class StartCommandTest {
             id1 = Thread.currentThread().getId();
             latch.countDown(); // Уменьшаем значение CountDownLatch при выполнении метода execute()
             return true;
-        }).when(macroCommand).execute();
+        }).when(startApp).execute();
 
-        startCommand.execute();
+        runCommand.execute();
         id2 = Thread.currentThread().getId();
 
         // Ожидаем выполнение метода execute() в новом потоке
         latch.await();
 
-        verify(macroCommand).execute();
+        verify(startApp).execute();
         assertEquals(0, latch.getCount());
         assertNotEquals(id1, id2);
     }
